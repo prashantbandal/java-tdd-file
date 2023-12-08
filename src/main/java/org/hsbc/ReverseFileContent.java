@@ -1,28 +1,38 @@
 package org.hsbc;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 
 public class ReverseFileContent {
+
+    private static final Logger logger = LoggerFactory.getLogger(ReverseFileContent.class);
+
     /**
-     * Reverse file content.
+     * Reverse the file content.
      *
-     * @param inputFile input file
-     * @return output file
+     * @param inputFile  input file
+     * @param outputFile output file
+     * @return output file with reverse content
      */
-    public String reverseFileContent(File inputFile) {
-        String reverse = "";
-        try (BufferedReader br = new BufferedReader(new FileReader(inputFile))) {
+    public File reverseFileContent(File inputFile, File outputFile) {
+        logger.info("Reversing the file content.");
+        try (BufferedReader br = new BufferedReader(new FileReader(inputFile));
+             BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile))) {
             String line = br.readLine();
-            if(null != line) {
+            if (null != line) {
                 StringBuilder builder = new StringBuilder(line);
                 builder.reverse();
-                reverse = builder.toString();
+                String reverse = builder.toString();
+                bw.write(reverse);
             }
+            logger.info("Reversed the file content.");
         } catch (IOException e) {
-            System.err.println(
-                    "error reading file in " +
-                            this.getClass().getSimpleName());
+            logger.error(
+                    "error while reading file in reverseFileContent {}",
+                    e.getMessage());
         }
-        return reverse;
+        return outputFile;
     }
 }
